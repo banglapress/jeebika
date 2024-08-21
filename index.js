@@ -9,7 +9,13 @@ const port = process.env.PORT || 5000;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: "https://jeebika.onrender.com/",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Create a MongoClient
