@@ -8,11 +8,10 @@ const port = process.env.PORT || 5000;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
-// Middleware
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://jeebika.com/",
+    "https://jeebika.com",
     "https://jeebika.onrender.com",
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -21,12 +20,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://jeebika.com/",
-  "https://jeebika.onrender.com",
-];
 
 app.use((req, res, next) => {
   const origin = req.get("origin");
@@ -57,7 +50,7 @@ async function run() {
     const userCollection = client.db("jeebika_main").collection("users");
 
     // POST route to add a new user
-    app.post("/first-regi", async (req, res) => {
+    app.post("/registration", async (req, res) => {
       const newUser = req.body;
       console.log(newUser);
       try {
@@ -70,7 +63,7 @@ async function run() {
     });
 
     // GET route to retrieve users
-    app.get("/first-regi", async (req, res) => {
+    app.get("/registration", async (req, res) => {
       try {
         const users = await userCollection.find({}).toArray();
         res.status(200).send(users);
