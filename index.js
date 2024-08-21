@@ -9,7 +9,6 @@ const port = process.env.PORT || 5000;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
 // Middleware
-
 app.use(cors());
 app.use(express.json());
 
@@ -29,6 +28,7 @@ async function run() {
 
     const userCollection = client.db("jeebika_main").collection("users");
 
+    // POST route to add a new user
     app.post("/first-regi", async (req, res) => {
       const newUser = req.body;
       console.log(newUser);
@@ -41,10 +41,18 @@ async function run() {
       }
     });
 
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // GET route to retrieve users
+    app.get("/first-regi", async (req, res) => {
+      try {
+        const users = await userCollection.find({}).toArray();
+        res.status(200).send(users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).send({ error: "Error fetching users" });
+      }
+    });
+
+    // Removed ping check for simplicity
   } catch (error) {
     console.error("Error connecting to MongoDB:", error); // Log connection errors
   }
