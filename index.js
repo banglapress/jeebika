@@ -21,20 +21,6 @@ const client = new MongoClient(uri, {
   },
 });
 
-const userSchema = new mongoose.Schema({
-  fullName: String,
-  username: { type: String, unique: true },
-  email: String,
-  phone: String,
-  education: String,
-  dob: Date,
-  gender: String,
-  password: String,
-});
-
-// Create a User Model
-const User = mongoose.model("User", userSchema);
-
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -48,23 +34,6 @@ async function run() {
       const result = await userCollection.insertOne(newUser);
       res.send(result);
     });
-
-    const existingUser = await User.findOne({ username: req.body.username });
-    if (existingUser) {
-        return res.status(400).json({ username: 'Username is already taken' });
-    }
-
-    
-
-    // Save the new user
-    const newUser = new User(req.body);
-    await newUser.save();
-
-    res.status(200).send('User registered successfully');
-} catch (err) {
-    console.error('Error registering new user:', err);
-    res.status(500).send('Error registering new user');
-}
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
