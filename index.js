@@ -9,11 +9,8 @@ const port = process.env.PORT || 5000;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
 // Middleware
-const corsOptions = {
-  origin: [process.env.REACT_APP_VERCEL_URL, "*"],
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+
+app.use(cors());
 app.use(express.json());
 
 // Create a MongoClient
