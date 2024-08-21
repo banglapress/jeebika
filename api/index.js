@@ -9,7 +9,11 @@ const port = process.env.PORT || 5000;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: [process.env.REACT_APP_VERCEL_URL, "*"],
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Create a MongoClient
@@ -23,31 +27,32 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server
     await client.connect();
+    console.log("Connected to MongoDB");
+
     const userCollection = client.db("jeebika_main").collection("users");
 
     app.post("/first-regi", async (req, res) => {
-      console.log("Request received:", req.body);
+      const newUser = req.body;
+      console.log(newUser);
       try {
-        const newUser = req.body;
         const result = await userCollection.insertOne(newUser);
-        console.log("Insert result:", result);
-        res.send(result);
+        res.status(201).send(result);
       } catch (error) {
-        console.error("Insert error:", error);
-        res.status(500).send({ error: "Failed to insert data" });
+        console.error("Error inserting user:", error);
+        res.status(500).send({ error: "Error inserting user" });
       }
     });
 
-    // Ping MongoDB to confirm connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Successfully connected to MongoDB!");
-  } finally {
-    // Ensure that the client will close when you finish/error
-    // await client.close();
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error); // Log connection errors
   }
 }
+
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
