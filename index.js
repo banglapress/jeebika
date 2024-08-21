@@ -3,11 +3,13 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@database0.2qbs8g0.mongodb.net/?retryWrites=true&w=majority&appName=database0`;
 
+// CORS configuration
 const corsOptions = {
   origin: [
     "http://localhost:5173",
@@ -20,18 +22,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-app.use((req, res, next) => {
-  const origin = req.get("origin");
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 // Create a MongoClient
 const client = new MongoClient(uri, {
@@ -72,8 +62,6 @@ async function run() {
         res.status(500).send({ error: "Error fetching users" });
       }
     });
-
-    // Removed ping check for simplicity
   } catch (error) {
     console.error("Error connecting to MongoDB:", error); // Log connection errors
   }
