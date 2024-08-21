@@ -10,13 +10,35 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@databas
 
 // Middleware
 const corsOptions = {
-  origin: "https://jeebika.onrender.com/",
-  optionsSuccessStatus: 200,
+  origin: [
+    "http://localhost:5173",
+    "https://jeebika.com/",
+    "https://jeebika.onrender.com",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://jeebika.com/",
+  "https://jeebika.onrender.com",
+];
+
+app.use((req, res, next) => {
+  const origin = req.get("origin");
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // Create a MongoClient
 const client = new MongoClient(uri, {
